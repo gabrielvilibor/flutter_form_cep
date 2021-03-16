@@ -87,18 +87,35 @@ class _HomePageState extends State<HomePage> {
         itemCount: clientes.length,
         itemBuilder: (_, index){
           Cliente c = clientes[index];
-          return ListTile(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                return ClienteFormPage(cliente: c);
-              }));
+          return Dismissible(
+            key: ValueKey(c.id),
+            direction: DismissDirection.endToStart,
+            onDismissed: (direction){
+              ScaffoldMessenger.of(_).showSnackBar(
+                SnackBar(content: Text(
+                  'Cliente ${c.nome} removido',
+                  style: TextStyle(
+                    fontSize: 17,
+                  ),
+                ),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.red,
+                ),
+              );
             },
-            leading: CircleAvatar(
-              child: Image.network('https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg'),
+            child: ListTile(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                  return ClienteFormPage(cliente: c);
+                }));
+              },
+              leading: CircleAvatar(
+                child: Image.network('https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg'),
+              ),
+              title: Text(c.nome),
+              subtitle: Text('${c.endereco}, ${c.numero} - ${c.bairro}'),
+              trailing: Text(c.email),
             ),
-            title: Text(c.nome),
-            subtitle: Text('${c.endereco}, ${c.numero} - ${c.bairro}'),
-            trailing: Text(c.email),
           );
         });
   }

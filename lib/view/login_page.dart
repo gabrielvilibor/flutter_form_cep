@@ -27,44 +27,56 @@ class _LoginPageState extends State<LoginPage> {
               )
             ),
           ),
-          Form(
-            key: this._formKey,
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/login/logodeku.png', height: 240,),
-                    SizedBox(height: 40,),
-                    Container(
-                        color: Colors.grey[200],
-                        child:
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InputText("Usuário/E-mail", tEmail, keyboardType: TextInputType.emailAddress, validator: _validate, color: Theme.of(context).primaryColor),
-                        )),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                        color: Colors.grey[200],
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InputText("Senha", tPass, keyboardType: TextInputType.number, password: true, validator: _validate, color: Theme.of(context).primaryColor),
-                        )),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    ElevatedButton(
-                        style: OutlinedButton.styleFrom(
-                          textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                          side: BorderSide(color: Colors.red, width: 1),
+          SingleChildScrollView(
+            child: Form(
+              key: this._formKey,
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                            key: UniqueKey(),
+                            radius: 85,
+                            backgroundImage: AssetImage('assets/login/logodeku.png'),
                         ),
-                        onPressed: _login,
-                        child: Text('Entrar'))
-                  ],
+                      ),
+                      SizedBox(height: 40,),
+                      Container(
+                          color: Colors.grey[200],
+                          child:
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InputText("Usuário/E-mail", tEmail, keyboardType: TextInputType.emailAddress, validator: _validate, color: Theme.of(context).primaryColor),
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                          color: Colors.grey[200],
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InputText("Senha", tPass, keyboardType: TextInputType.number, password: true, validator: _validate, color: Theme.of(context).primaryColor),
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: 60,
+                        child: ElevatedButton(
+                            style: OutlinedButton.styleFrom(
+                              textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                              side: BorderSide(color: Colors.red, width: 1),
+                            ),
+                            onPressed: _login,
+                            child: Text('Entrar')),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

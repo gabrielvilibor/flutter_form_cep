@@ -10,6 +10,7 @@ class Cliente {
   String cidade;
   String uf;
   String pais;
+  String foto;
 
   Cliente(
       {this.id,
@@ -22,7 +23,8 @@ class Cliente {
         this.bairro,
         this.cidade,
         this.uf,
-        this.pais});
+        this.pais,
+        this.foto});
 
   Cliente.fromMap(Map<String, dynamic> json) {
     id = json['id'];
@@ -36,6 +38,7 @@ class Cliente {
     cidade = json['cidade'];
     uf = json['uf'];
     pais = json['pais'];
+    foto = json['foto'];
   }
 
   Map<String, dynamic> toMap() {
@@ -51,6 +54,7 @@ class Cliente {
     data['cidade'] = this.cidade;
     data['uf'] = this.uf;
     data['pais'] = this.pais;
+    data['foto'] = this.foto;
     return data;
   }
 }

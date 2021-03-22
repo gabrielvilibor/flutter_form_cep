@@ -23,7 +23,8 @@ class _HomePageState extends State<HomePage> {
         "bairro": "flutter",
         "cidade": "dart",
         "uf": "DF",
-        "pais": "google"
+        "pais": "google",
+        "foto": "https://robohash.org/1.png"
       },
       {
         "id": 2,
@@ -36,7 +37,8 @@ class _HomePageState extends State<HomePage> {
         "bairro": "flutter",
         "cidade": "dart",
         "uf": "DF",
-        "pais": "google"
+        "pais": "google",
+        "foto": "https://robohash.org/2.png"
       },
       {
         "id": 3,
@@ -49,7 +51,8 @@ class _HomePageState extends State<HomePage> {
         "bairro": "flutter",
         "cidade": "dart",
         "uf": "DF",
-        "pais": "google"
+        "pais": "google",
+        "foto": "https://robohash.org/3.png"
       },
       {
         "id": 4,
@@ -62,7 +65,8 @@ class _HomePageState extends State<HomePage> {
         "bairro": "flutter",
         "cidade": "dart",
         "uf": "DF",
-        "pais": "google"
+        "pais": "google",
+        "foto": "https://robohash.org/4.png"
       }
     ].map((e) => Cliente.fromMap(e)).toList();
 
@@ -109,8 +113,12 @@ class _HomePageState extends State<HomePage> {
                   return ClienteFormPage(cliente: c);
                 }));
               },
-              leading: CircleAvatar(
-                child: Image.network('https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg'),
+              leading: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: CircleAvatar(
+                  radius: 35,
+                  backgroundImage: NetworkImage(c.foto ?? 'https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg'),
+                ),
               ),
               title: Text(c.nome),
               subtitle: Text('${c.endereco}, ${c.numero} - ${c.bairro}'),

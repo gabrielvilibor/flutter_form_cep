@@ -7,9 +7,10 @@ class InputText extends StatelessWidget {
   TextEditingController controller;
   FormFieldValidator<String> validator;
   bool password;
+  FocusNode myFocusNode;
   Color color;
 
-  InputText(this.label, this.controller, {this.validator, this. keyboardType, this.password = false, this.color});
+  InputText(this.label, this.controller, {this.validator, this. keyboardType, this.password = false, this.color, this.myFocusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class InputText extends StatelessWidget {
       obscureText: password,
       controller: controller,
       validator: validator,
+      focusNode: myFocusNode,
       keyboardType: keyboardType != null ? keyboardType : TextInputType.text,
       decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(

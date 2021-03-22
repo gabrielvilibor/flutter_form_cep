@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_form_cep/controller/buscacep_mobx.dart';
+import 'package:flutter_form_cep/model/buscacep.dart';
 import 'package:flutter_form_cep/model/cliente.dart';
 import 'package:flutter_form_cep/repositories/input_text.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ClienteFormPage extends StatefulWidget {
 
@@ -16,6 +21,8 @@ class _MyHomeState extends State<ClienteFormPage> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  FocusNode myFocusNode = FocusNode();
+
   final tNome = TextEditingController();
   final tEmail = TextEditingController();
   final tCPF = TextEditingController();
@@ -26,6 +33,10 @@ class _MyHomeState extends State<ClienteFormPage> {
   final tCidade = TextEditingController();
   final tUF = TextEditingController();
   final tPais = TextEditingController();
+
+  File _file;
+
+  Cliente get c => widget.cliente;
 
 
   @override
@@ -45,6 +56,27 @@ class _MyHomeState extends State<ClienteFormPage> {
         child: Column(
           children: [
             Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InkWell(
+                onTap: _onClickFoto,
+                child: CircleAvatar(
+                  key: UniqueKey(),
+                  radius: 60,
+                  backgroundImage: _file != null ? FileImage(_file) : c == null ?
+                  NetworkImage('https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg') :
+                  NetworkImage(c.foto),
+                ),
+              ),
+            ),
+            Text(
+              "Clique na imagem para tirar uma foto",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+            Padding(
               padding: EdgeInsets.all(8),
               child: InputText("Nome Completo", tNome, validator: _validate),
             ),
@@ -60,7 +92,7 @@ class _MyHomeState extends State<ClienteFormPage> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Expanded(flex: 2, child: InputText("CEP", tCEP, validator: _validate, keyboardType: TextInputType.number)),
+                  Expanded(flex: 1, child: InputText("CEP", tCEP, validator: _validate, keyboardType: TextInputType.number)),
                   Expanded(flex: 1, child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: Row(
@@ -69,7 +101,32 @@ class _MyHomeState extends State<ClienteFormPage> {
                         IconButton(
                           icon: Icon(Icons.search),
                           tooltip: 'Buscar Cep',
-                          onPressed: (){},
+                          onPressed: () async{
+                            BuscaCep bc = await _buscaCep();
+                            if(bc != null){
+                            setState(() {
+                              tEndereco.text = bc.logradouro;
+                              tCEP.text = bc.cep;
+                              tBairro.text = bc.bairro;
+                              tCidade.text = bc.localidade;
+                              tUF.text = bc.uf;
+                              tPais.text = 'Brasil';
+
+                              myFocusNode.requestFocus();
+                            });}else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(
+                                  'CEP não encontrado',
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
                         ), Text('Buscar Cep', style: TextStyle(fontWeight: FontWeight.bold),)
                       ],
                     ),
@@ -85,7 +142,7 @@ class _MyHomeState extends State<ClienteFormPage> {
                 )),
                 Expanded(flex: 1, child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: InputText("Nº", tNum, validator: _validate),
+                  child: InputText("Nº", tNum, validator: _validate, myFocusNode: myFocusNode),
                 ))
               ],
             ),
@@ -189,6 +246,24 @@ class _MyHomeState extends State<ClienteFormPage> {
       },
     );
 
+  }
+
+  Future<BuscaCep> _buscaCep() async{
+
+    String cep = tCEP.text;
+    var mobx = BuscaCepMobx();
+
+    BuscaCep bc = await mobx.buscaCep(cep);
+
+    return bc;
+
+  }
+
+  _onClickFoto() async{
+    File file = await ImagePicker.pickImage(source: ImageSource.camera);
+    setState(() {
+      this._file = file;
+    });
   }
 }
 

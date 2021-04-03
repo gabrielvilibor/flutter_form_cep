@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class InputText extends StatelessWidget {
 
-  String label;
-  TextInputType keyboardType;
-  TextEditingController controller;
-  FormFieldValidator<String> validator;
-  bool password;
-  FocusNode myFocusNode;
-  Color color;
+  final String? label;
+  final TextInputType? keyboardType;
+  final TextEditingController? controller;
+  final FormFieldValidator<String>? validator;
+  final bool password;
+  final FocusNode? myFocusNode;
+  final Color? color;
 
   InputText(this.label, this.controller, {this.validator, this. keyboardType, this.password = false, this.color, this.myFocusNode});
 

@@ -8,17 +8,14 @@ class BuscaCepMobx = BuscaCepMobxBase with _$BuscaCepMobx;
 abstract class BuscaCepMobxBase with Store{
 
   @observable
-  BuscaCep bc;
-
-  @observable
-  Error error;
+  BuscaCep? bc;
 
   @action
-  Future<BuscaCep> buscaCep(String cep) async{
+  Future<BuscaCep?> buscaCep(String cep) async{
     try{
       return await BuscaCepApi.getCep(cep);
-    }catch(e){
-      error = e;
+    }finally{
+
     }
   }
 

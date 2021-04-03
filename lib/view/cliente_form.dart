@@ -2,14 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_cep/controller/buscacep_mobx.dart';
+import 'package:flutter_form_cep/database/my_db.dart';
 import 'package:flutter_form_cep/model/buscacep.dart';
 import 'package:flutter_form_cep/model/cliente.dart';
+import 'package:flutter_form_cep/repositories/db/cliente.repository.dart';
 import 'package:flutter_form_cep/repositories/input_text.dart';
+import 'package:flutter_form_cep/view/home_page.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ClienteFormPage extends StatefulWidget {
 
-  Cliente cliente;
+  Cliente? cliente;
 
   ClienteFormPage({this.cliente});
 
@@ -34,10 +37,9 @@ class _MyHomeState extends State<ClienteFormPage> {
   final tUF = TextEditingController();
   final tPais = TextEditingController();
 
-  File _file;
+  Cliente? get c => widget.cliente;
 
-  Cliente get c => widget.cliente;
-
+  final cliRepo = ClienteRepository(new MyDb());
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +64,8 @@ class _MyHomeState extends State<ClienteFormPage> {
                 child: CircleAvatar(
                   key: UniqueKey(),
                   radius: 60,
-                  backgroundImage: _file != null ? FileImage(_file) : c == null ?
-                  NetworkImage('https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg') :
-                  NetworkImage(c.foto),
+                  backgroundImage:
+                  NetworkImage('https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg'),
                 ),
               ),
             ),
@@ -105,11 +106,11 @@ class _MyHomeState extends State<ClienteFormPage> {
                             BuscaCep bc = await _buscaCep();
                             if(bc != null){
                             setState(() {
-                              tEndereco.text = bc.logradouro;
-                              tCEP.text = bc.cep;
-                              tBairro.text = bc.bairro;
-                              tCidade.text = bc.localidade;
-                              tUF.text = bc.uf;
+                              tEndereco.text = bc.logradouro!;
+                              tCEP.text = bc.cep!;
+                              tBairro.text = bc.bairro!;
+                              tCidade.text = bc.localidade!;
+                              tUF.text = bc.uf!;
                               tPais.text = 'Brasil';
 
                               myFocusNode.requestFocus();
@@ -186,15 +187,15 @@ class _MyHomeState extends State<ClienteFormPage> {
     );
   }
 
-  String _validate(String value) {
-    if (value.isEmpty) {
+  String? _validate(String? value) {
+    if (value!.isEmpty) {
       return 'Campo obrigatório';
     }
     return null;
   }
 
   _onClickSalvar() {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(
           'Existe um erro em seu formulário',
@@ -208,16 +209,20 @@ class _MyHomeState extends State<ClienteFormPage> {
       );
     }
 
-    String nome = tNome.text;
-    String cpf = tCPF.text;
-    String cep = tCEP.text;
-    String email = tEmail.text;
-    String endereco = tEndereco.text;
-    String numero = tNum.text;
-    String bairro = tBairro.text;
-    String cidade = tCidade.text;
-    String uf = tUF.text;
-    String pais = tPais.text;
+    Cliente newCli = new Cliente();
+
+    newCli.nome = tNome.text;
+    newCli.cpf = tCPF.text;
+    newCli.cep = int.tryParse(tCEP.text) ?? 0;
+    newCli.email = tEmail.text;
+    newCli.endereco = tEndereco.text;
+    newCli.numero = tNum.text;
+    newCli.bairro = tBairro.text;
+    newCli.cidade = tCidade.text;
+    newCli.uf = tUF.text;
+    newCli.pais = tPais.text;
+
+    cliRepo.save(newCli);
 
     showDialog(
       context: context,
@@ -228,16 +233,12 @@ class _MyHomeState extends State<ClienteFormPage> {
           child: AlertDialog(
             title: Text('Dados salvos'),
             actions: <Widget>[
-              Text('Seu nome é $nome'),
-              Text('CPF $cpf'),
-              Text('E-mail: $email'),
-              Text('CEP $cep'),
-              Text('Endereço: $endereco, $numero - $bairro'),
-              Text('Cidade $cidade - $uf - $pais'),
               OutlinedButton(
                 child: Text("OK"),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                    return HomePage();
+                  }));
                 },
               )
             ],
@@ -253,16 +254,18 @@ class _MyHomeState extends State<ClienteFormPage> {
     String cep = tCEP.text;
     var mobx = BuscaCepMobx();
 
-    BuscaCep bc = await mobx.buscaCep(cep);
+    BuscaCep bc = (await mobx.buscaCep(cep))!;
 
     return bc;
 
   }
 
   _onClickFoto() async{
-    File file = await ImagePicker.pickImage(source: ImageSource.camera);
+    var file = await ImagePicker().getImage(
+        source: ImageSource.gallery, imageQuality: 50
+    );
     setState(() {
-      this._file = file;
+     c!.foto = file!.path;
     });
   }
 }

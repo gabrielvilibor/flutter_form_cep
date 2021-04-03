@@ -6,7 +6,7 @@ import 'package:flutter_form_cep/model/buscacep.dart';
 
 class BuscaCepApi {
 
-  static Future<BuscaCep> getCep(String cep) async{
+  static Future<BuscaCep?> getCep(String cep) async{
     var url = "https://viacep.com.br/ws/";
     try{
       var dio = Dio(BaseOptions(baseUrl: url));

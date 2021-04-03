@@ -86,15 +86,15 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  String _validate(String value) {
-    if (value.isEmpty) {
+  String? _validate(String? value) {
+    if (value!.isEmpty) {
       return 'Campo obrigatório';
     }
     return null;
   }
 
   _login() {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(
           'Existe um erro em seu formulário',

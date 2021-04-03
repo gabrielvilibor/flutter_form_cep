@@ -1,16 +1,16 @@
 class Cliente {
-  int id;
-  String nome;
-  String email;
-  String cpf;
-  int cep;
-  String endereco;
-  String numero;
-  String bairro;
-  String cidade;
-  String uf;
-  String pais;
-  String foto;
+  int? id;
+  String? nome;
+  String? email;
+  String? cpf;
+  int? cep;
+  String? endereco;
+  String? numero;
+  String? bairro;
+  String? cidade;
+  String? uf;
+  String? pais;
+  String? foto;
 
   Cliente(
       {this.id,

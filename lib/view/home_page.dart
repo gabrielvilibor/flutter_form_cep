@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_cep/database/my_db.dart';
 import 'package:flutter_form_cep/model/cliente.dart';
+import 'package:flutter_form_cep/repositories/db/cliente.repository.dart';
 import 'package:flutter_form_cep/view/cliente_form.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,72 +10,44 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final cliRepo = ClienteRepository(MyDb());
+  Future<List<Cliente>>? listClientes;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetch();
+  }
+
+  _fetch() async {
+    setState(() {
+      listClientes = cliRepo.get();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-
-    var clientes = [
-      {
-        "id": 1,
-        "nome": "Gabriel",
-        "email": "email@email.com",
-        "cpf": "123.234.456-90",
-        "cep": 13000000,
-        "endereco": "rua grow",
-        "numero": "s/n",
-        "bairro": "flutter",
-        "cidade": "dart",
-        "uf": "DF",
-        "pais": "google",
-        "foto": "https://robohash.org/1.png"
-      },
-      {
-        "id": 2,
-        "nome": "Edson",
-        "email": "email@email.com",
-        "cpf": "321.432.432-90",
-        "cep": 18000000,
-        "endereco": "rua dev",
-        "numero": "12",
-        "bairro": "flutter",
-        "cidade": "dart",
-        "uf": "DF",
-        "pais": "google",
-        "foto": "https://robohash.org/2.png"
-      },
-      {
-        "id": 3,
-        "nome": "Thobias",
-        "email": "tho@email.com",
-        "cpf": "654.543.222-22",
-        "cep": 18300000,
-        "endereco": "rua gdev",
-        "numero": "132",
-        "bairro": "flutter",
-        "cidade": "dart",
-        "uf": "DF",
-        "pais": "google",
-        "foto": "https://robohash.org/3.png"
-      },
-      {
-        "id": 4,
-        "nome": "Fabio",
-        "email": "email@fabio.com",
-        "cpf": "001.002.003-00",
-        "cep": 18900000,
-        "endereco": "rua dev sr",
-        "numero": "123",
-        "bairro": "flutter",
-        "cidade": "dart",
-        "uf": "DF",
-        "pais": "google",
-        "foto": "https://robohash.org/4.png"
-      }
-    ].map((e) => Cliente.fromMap(e)).toList();
 
     return Scaffold(
       appBar: AppBar(title: Text('Listagem do Formulário'),),
       body: Container(
-          child: _list(clientes)
+          child: _body()
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text("Sair"),
+              onTap: () {
+                print('Sair');
+              },
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Text('+'),
@@ -84,6 +58,19 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  _body(){
+    return FutureBuilder(
+        future: listClientes,
+        builder: (_, AsyncSnapshot<List<Cliente>> snapshot){
+
+          final clientes = snapshot.data ?? [];
+
+          return RefreshIndicator(onRefresh: () => _fetch(), 
+            child: _list(clientes));
+
+        });
   }
 
   _list(List<Cliente> clientes) {
@@ -120,9 +107,9 @@ class _HomePageState extends State<HomePage> {
                   backgroundImage: NetworkImage(c.foto ?? 'https://controlacesta-images.s3.us-east-2.amazonaws.com/semimagem.jpg'),
                 ),
               ),
-              title: Text(c.nome),
+              title: Text(c.nome!),
               subtitle: Text('${c.endereco}, ${c.numero} - ${c.bairro}'),
-              trailing: Text(c.email),
+              trailing: Text(c.email!),
             ),
           );
         });

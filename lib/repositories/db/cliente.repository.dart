@@ -35,4 +35,35 @@ class ClienteRepository{
       throw 'Erro ao recuperar os clientes';
     }
   } // fim list all
+
+  Future<bool> update(Cliente c) async {
+    try {
+      final instance = await _myDb.getInstance();
+
+      final id = await instance.update('clientes', c.toMap(), where: 'id = ?', whereArgs: [c.id]);
+      print('cliente atualizado id: $id');
+
+      return id > 0;
+    } catch (e) {
+      print(e);
+      throw 'Erro ao atualizar o cliente';
+    }
+  } // fim save
+
+  Future<bool> delete(Cliente cliente) async {
+    try {
+      final instance = await _myDb.getInstance();
+
+      final result = await instance.delete(
+        'clientes',
+        where: 'id = ?',
+        whereArgs: [cliente.id],
+      );
+
+      return result > 0;
+    } catch (e) {
+      print(e);
+      throw 'Erro ao excluir o cliente';
+    }
+  }
 }

@@ -39,6 +39,24 @@ class _MyHomeState extends State<ClienteFormPage> {
 
   Cliente? get c => widget.cliente;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(c != null){
+      tNome.text = c!.nome.toString();
+      tEmail.text = c!.email.toString();
+      tCPF.text = c!.cpf.toString();
+      tCEP.text = c!.cep.toString();
+      tEndereco.text = c!.endereco.toString();
+      tNum.text = c!.numero.toString();
+      tBairro.text = c!.bairro.toString();
+      tCidade.text = c!.cidade.toString();
+      tUF.text = c!.uf.toString();
+      tPais.text = c!.pais.toString();
+    }
+  }
+
   final cliRepo = ClienteRepository(new MyDb());
 
   @override
@@ -47,11 +65,11 @@ class _MyHomeState extends State<ClienteFormPage> {
       appBar: AppBar(
         title: Text('Formulário de cadastro', style: TextStyle(color: Colors.white)),
       ),
-      body: _body(),
+      body: _body(c),
     );
   }
 
-  _body() {
+  _body(Cliente? c) {
     return SingleChildScrollView(
       child: Form(
         key: this._formKey,
@@ -176,7 +194,7 @@ class _MyHomeState extends State<ClienteFormPage> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Button(_onClickSalvar, 'Cadastrar'),
+                    child: Button(_onClickSalvar, c == null ? 'Cadastrar' : 'Editar'),
                   ),
                 ],
               ),
@@ -222,7 +240,12 @@ class _MyHomeState extends State<ClienteFormPage> {
     newCli.uf = tUF.text;
     newCli.pais = tPais.text;
 
-    cliRepo.save(newCli);
+    if(c != null){
+      cliRepo.update(newCli);
+    }else{
+      cliRepo.save(newCli);
+    }
+
 
     showDialog(
       context: context,

@@ -81,7 +81,27 @@ class _HomePageState extends State<HomePage> {
           return Dismissible(
             key: ValueKey(c.id),
             direction: DismissDirection.endToStart,
+            background: Container(
+              color: Colors.red,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    'Excluindo o cliente...',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
             onDismissed: (direction){
+              cliRepo.delete(c);
               ScaffoldMessenger.of(_).showSnackBar(
                 SnackBar(content: Text(
                   'Cliente ${c.nome} removido',

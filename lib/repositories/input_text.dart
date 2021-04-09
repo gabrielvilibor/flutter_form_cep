@@ -26,9 +26,9 @@ class InputText extends StatelessWidget {
           ),
           labelText: label,
           hintText: label,
-          labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: this.color ?? Colors.blueGrey),
-          hintStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: this.color ??  Theme.of(context).primaryColor)),
-      style: TextStyle(fontSize: 18, color: this.color ?? Theme.of(context).primaryColor),
+          labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: this.color ?? Colors.blueGrey),
+          hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: this.color ??  Theme.of(context).primaryColor)),
+      style: TextStyle(fontSize: 16, color: this.color ?? Theme.of(context).primaryColor),
       textAlign: TextAlign.left,
     );
   }

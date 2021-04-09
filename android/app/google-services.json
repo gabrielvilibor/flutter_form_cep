@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "990892024376",
+    "project_id": "projetogrow-login",
+    "storage_bucket": "projetogrow-login.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990892024376:android:0fe50fadbbc89b2e0c3ccd",
+        "android_client_info": {
+          "package_name": "com.example.flutter_form_cep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990892024376-7tdake7isc5r8cdv9pvg9jrlvjebghkr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_form_cep",
+            "certificate_hash": "468734826579be0757e6357f9ecb0c1c3199b597"
+          }
+        },
+        {
+          "client_id": "990892024376-6bgjfannmjkas0813u1fdodc8q8ldlej.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBq3JERUkF2qtOS-9LG3VUQIo8i6QFt_LM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "990892024376-6bgjfannmjkas0813u1fdodc8q8ldlej.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

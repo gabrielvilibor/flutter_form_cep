@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">flutter_form_cep</string>
+    <string name="facebook_app_id">456893535395139</string>
+    <string name="fb_login_protocol_scheme">fb456893535395139</string>
+</resources>

@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_form_cep/repositories/input_text.dart';
 import 'package:flutter_form_cep/view/home_page.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -59,11 +62,6 @@ class _LoginPageState extends State<LoginPage> {
                         height: 20,
                       ),
                       Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              
-                            )
-                          ),
                           color: Colors.grey[200],
                           child: InputText("Senha", tPass, keyboardType: TextInputType.number, password: true, validator: _validate, color: Theme.of(context).primaryColor)),
                       SizedBox(
@@ -86,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 50,
                         child: SignInButton(
                           Buttons.GoogleDark,
-                          onPressed: (){},
+                          onPressed: _onGoogleLogin,
                         ),
                       ),
                       SizedBox(
@@ -96,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 40,
                         child: SignInButton(
                           Buttons.FacebookNew,
-                          onPressed: (){},
+                          onPressed: _onFaceLogin,
                         ),
                       ),
                     ],
@@ -152,5 +150,42 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     }
+  }
+
+  Future<void> _onGoogleLogin() async {
+
+    final googleUser = await GoogleSignIn().signIn();
+
+    final googleAuth = await googleUser!.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final loginResult =
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    print(loginResult.user!.displayName);
+    print(loginResult.user!.email);
+
+  }
+
+  Future<void> _onFaceLogin() async {
+
+    final faceLogin = await FacebookAuth.instance.login();
+
+    print(faceLogin.status);
+    if(faceLogin.status == LoginStatus.success){
+      final credential = FacebookAuthProvider.credential(faceLogin.accessToken!.token);
+
+      final firebaseLogin = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      print(firebaseLogin.user!.displayName);
+      print(firebaseLogin.user!.email);
+    }
+
+    print('Login sem sucesso');
+
   }
 }

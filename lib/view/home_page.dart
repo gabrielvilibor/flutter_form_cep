@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_cep/controller/auth_login.dart';
 import 'package:flutter_form_cep/database/my_db.dart';
 import 'package:flutter_form_cep/model/cliente.dart';
+import 'package:flutter_form_cep/model/user_auth.dart';
 import 'package:flutter_form_cep/repositories/db/cliente.repository.dart';
 import 'package:flutter_form_cep/view/cliente_form.dart';
+import 'package:get_it/get_it.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,6 +16,8 @@ class _HomePageState extends State<HomePage> {
 
   final cliRepo = ClienteRepository(MyDb());
   Future<List<Cliente>>? listClientes;
+
+  final authController = GetIt.I.get<AuthLogin>();
 
   @override
   void initState() {
@@ -39,11 +44,36 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: ListView(
           children: [
+            ValueListenableBuilder<UserAuth?>(
+              valueListenable: authController.usuario,
+              builder: (_, userLogged, __) {
+                return UserAccountsDrawerHeader(
+                  currentAccountPicture: CircleAvatar(
+                    backgroundImage: NetworkImage(userLogged!.urlPhoto),
+                  ),
+                  accountName: Text(
+                    userLogged.name,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  accountEmail: Text(
+                    userLogged.email,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/login/logodeku.png'),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.bottomCenter,
+                    ),
+                  ),
+                );
+              },
+            ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text("Sair"),
-              onTap: () {
-                print('Sair');
+              onTap: () async {
+                await authController.logout();
               },
             ),
           ],

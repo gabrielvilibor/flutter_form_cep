@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_form_cep/controller/user_login.dart';
 import 'package:flutter_form_cep/repositories/input_text.dart';
 import 'package:flutter_form_cep/view/home_page.dart';
 import 'package:flutter_signin_button/button_list.dart';
@@ -21,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userLogin = UserLogin();
     return Scaffold(
       body: Stack(
         children: [
@@ -38,66 +40,74 @@ class _LoginPageState extends State<LoginPage> {
               child: Container(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                            key: UniqueKey(),
-                            radius: 65,
-                            backgroundImage: AssetImage('assets/login/logodeku.png'),
-                        ),
-                      ),
-                      SizedBox(height: 20,),
-                      Container(
-                          color: Colors.grey[200],
-                          child:
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: InputText("Usuário/E-mail", tEmail, keyboardType: TextInputType.emailAddress, validator: _validate, color: Theme.of(context).primaryColor),
-                          )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                          color: Colors.grey[200],
-                          child: InputText("Senha", tPass, keyboardType: TextInputType.number, password: true, validator: _validate, color: Theme.of(context).primaryColor)),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        height: 50,
-                        child: ElevatedButton(
-                            style: OutlinedButton.styleFrom(
-                              textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                              side: BorderSide(color: Colors.red, width: 1),
+                  child: ValueListenableBuilder(
+                    valueListenable: userLogin.isLoading,
+                      builder: (_, isLoading, __) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(
+                                key: UniqueKey(),
+                                radius: 65,
+                                backgroundImage:
+                                    AssetImage('assets/login/logodeku.png'),
+                              ),
                             ),
-                            onPressed: _login,
-                            child: Text('Entrar')),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        height: 50,
-                        child: SignInButton(
-                          Buttons.GoogleDark,
-                          onPressed: _onGoogleLogin,
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                                color: Colors.grey[200],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: InputText("Usuário/E-mail", tEmail,
+                                      keyboardType: TextInputType.emailAddress, validator: _validate, color: Theme.of(context).primaryColor),
+                            )),
+                        SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        height: 40,
-                        child: SignInButton(
-                          Buttons.FacebookNew,
-                          onPressed: _onFaceLogin,
+                        Container(
+                            color: Colors.grey[200],
+                            child: InputText("Senha", tPass, keyboardType: TextInputType.number, password: true, validator: _validate, color: Theme.of(context).primaryColor)),
+                        SizedBox(
+                          height: 20,
                         ),
-                      ),
-                    ],
+                        Container(
+                          height: 50,
+                          child: ElevatedButton(
+                              style: OutlinedButton.styleFrom(
+                                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                                side: BorderSide(color: Colors.red, width: 1),
+                              ),
+                              onPressed: _login,
+                              child: Text('Entrar')),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 50,
+                          child: SignInButton(
+                            Buttons.GoogleDark,
+                            onPressed: userLogin.onGoogleLogin,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 40,
+                          child: SignInButton(
+                            Buttons.FacebookNew,
+                            onPressed: userLogin.onFaceLogin,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
                   ),
                 ),
               ),
@@ -152,40 +162,5 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> _onGoogleLogin() async {
 
-    final googleUser = await GoogleSignIn().signIn();
-
-    final googleAuth = await googleUser!.authentication;
-
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    final loginResult =
-    await FirebaseAuth.instance.signInWithCredential(credential);
-
-    print(loginResult.user!.displayName);
-    print(loginResult.user!.email);
-
-  }
-
-  Future<void> _onFaceLogin() async {
-
-    final faceLogin = await FacebookAuth.instance.login();
-
-    print(faceLogin.status);
-    if(faceLogin.status == LoginStatus.success){
-      final credential = FacebookAuthProvider.credential(faceLogin.accessToken!.token);
-
-      final firebaseLogin = await FirebaseAuth.instance.signInWithCredential(credential);
-
-      print(firebaseLogin.user!.displayName);
-      print(firebaseLogin.user!.email);
-    }
-
-    print('Login sem sucesso');
-
-  }
 }
